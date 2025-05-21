@@ -1,60 +1,40 @@
-import multer from 'multer'; // Importa o Multer, responsável por lidar com uploads
-import path from 'path'; // Módulo para trabalhar com caminhos de arquivos
-import crypto from 'crypto'; // Módulo para gerar valores aleatórios
+import multer from 'multer';
+import path from 'path';
 
-// Define a configuração de armazenamento dos arquivos
+// Função que gera um nome aleatório com 16 caracteres alfanuméricos
+function generateRandomName(length = 16): string {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let name = '';
+  for (let i = 0; i < length; i++) {
+    name += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return name;
+}
+
+// Configuração para upload genérico (ex: PDF, anexos)
 const storage = multer.diskStorage({
-  // Define o diretório onde os arquivos enviados serão salvos
   destination: (req, file, cb) => {
-    cb(null, path.resolve(__dirname, '..', '..', 'uploads')); // Caminho absoluto até a pasta "uploads"
+    cb(null, path.resolve(__dirname, '..', '..', 'uploads'));
   },
-
-  // Define o nome do arquivo que será salvo
   filename: (req, file, cb) => {
-    const hash = crypto.randomBytes(6).toString('hex'); // Gera um hash aleatório de 6 bytes
-    const ext = path.extname(file.originalname); // Extrai a extensão original do arquivo
-
-    // Tenta obter o UUID do usuário da requisição
-    const uuid = (req.body?.uuid || req.params?.uuid || req.query?.uuid || 'sem-uuid');
-
-    // Cria o nome final do arquivo: uuid-hash-nomeOriginal.ext
-    const filename = `${uuid}-${hash}-${file.originalname}`;
-
-    cb(null, filename); // Retorna o nome para o multer salvar
+    const ext = path.extname(file.originalname); // mantém a extensão original
+    const filename = `${generateRandomName()}${ext}`;
+    cb(null, filename);
   }
 });
 
-// Cria o middleware de upload com a configuração de armazenamento definida
 export const upload = multer({ storage });
 
-// Define a configuração de armazenamento dos arquivos
+// Configuração para upload de capas de livros
 const storageCapa = multer.diskStorage({
-  // Define o diretório onde os arquivos enviados serão salvos
   destination: (req, file, cb) => {
-    cb(null, path.resolve(__dirname, '..', '..', 'uploads/cover')); // Caminho absoluto até a pasta "uploads"
+    cb(null, path.resolve(__dirname, '..', '..', 'uploads', 'cover'));
   },
-
-  // Define o nome do arquivo que será salvo
   filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname); // Extrai a extensão original do arquivo
-
-    // Tenta obter o UUID do usuário da requisição
-    const titulo = (req.body?.titulo);
-    const editora = (req.body?.editora);
-
-    const sanitize = (texto: string) => texto
-      .replace(/[^a-zA-Z0-9-_ ]/g, '') // remove caracteres especiais (exceto espaço, hífen e underscore)
-      .replace(/ /g, "_");             // troca espaços por underscores
-
-    const tituloSanitizado = sanitize(titulo);
-    const editoraSanitizada = sanitize(editora);
-
-    // Cria o nome final do arquivo: uuid-hash-nomeOriginal.ext
-    const filename = `${tituloSanitizado}-${editoraSanitizada}-${file.originalname}`;
-
-    cb(null, filename); // Retorna o nome para o multer salvar
+    const ext = path.extname(file.originalname); // mantém a extensão
+    const filename = `${generateRandomName()}${ext}`;
+    cb(null, filename);
   }
 });
 
-// Cria o middleware de upload com a configuração de armazenamento definida
 export const uploadCapa = multer({ storage: storageCapa });
