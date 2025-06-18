@@ -1,0 +1,437 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "version": "v1.0.0",
+      "title": "Biblioteca",
+      "description": "Implementação do Swagger à API"
+    },
+    "servers": [
+      {
+        "url": "http://localhost:3333",
+        "description": ""
+      }
+    ],
+    "paths": {
+      "/novo/aluno": {
+        "post": {
+          "tags": ["Alunos"],
+          "summary": "Cadastrar novo aluno",
+          "description": "Esta rota recebe informações de um aluno para cadastrar no banco de dados.",
+          "operationId": "cadastrarAluno",
+          "security": [{ "apiKeyAuth": [] }],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "nome": { "type": "string", "example": "Samuel" },
+                    "sobrenome": { "type": "string", "example": "Viana" },
+                    "dataNascimento": { "type": "string", "format": "date", "example": "1995-01-26" },
+                    "endereco": { "type": "string", "example": "Parque Leblon, 478" },
+                    "email": { "type": "string", "format": "email", "example": "samuel.caua.viana@facebook.com" },
+                    "celular": { "type": "string", "example": "85996712239" }
+                  },
+                  "required": ["nome", "sobrenome", "dataNascimento", "endereco", "email", "celular"]
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Aluno cadastrado com sucesso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "mensagem": { "type": "string", "example": "Aluno cadastrado com sucesso" }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Não foi possível cadastrar o aluno",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "erro": { "type": "string", "example": "Dados inválidos ou incompletos" }
+                    }
+                  }
+                }
+              }
+            },
+            "401": { "description": "Token de autenticação ausente ou inválido" },
+            "403": { "description": "Acesso não autorizado" },
+            "500": { "description": "Erro interno no servidor" }
+          }
+        }
+      },
+      "/lista/alunos": {
+        "get": {
+          "tags": ["Alunos"],
+          "summary": "Listar todos os alunos",
+          "description": "Retorna uma lista de todos os alunos cadastrados no sistema.",
+          "operationId": "listarAlunos",
+          "security": [{ "apiKeyAuth": [] }],
+          "responses": {
+            "200": {
+              "description": "Lista de alunos retornada com sucesso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": { "$ref": "#/components/schemas/Aluno" }
+                  }
+                }
+              }
+            },
+            "401": { "description": "Token de autenticação ausente ou inválido" },
+            "403": { "description": "Acesso não autorizado" },
+            "500": { "description": "Erro interno no servidor" }
+          }
+        }
+      },
+      "/delete/aluno/{id}": {
+        "delete": {
+          "tags": ["Alunos"],
+          "summary": "Deletar um aluno pelo ID",
+          "description": "Remove um aluno específico do banco de dados.",
+          "operationId": "deletarAluno",
+          "security": [{ "apiKeyAuth": [] }],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "description": "ID do aluno a ser deletado",
+              "schema": { "type": "integer", "example": 1 }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Aluno deletado com sucesso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "mensagem": { "type": "string", "example": "Aluno deletado com sucesso" }
+                    }
+                  }
+                }
+              }
+            },
+            "404": { "description": "Aluno não encontrado" },
+            "401": { "description": "Token de autenticação ausente ou inválido" },
+            "403": { "description": "Acesso não autorizado" },
+            "500": { "description": "Erro interno no servidor" }
+          }
+        }
+      },
+      "/novo/livro": {
+        "post": {
+          "tags": ["Livros"],
+          "summary": "Cadastrar novo livro",
+          "description": "Esta rota recebe informações de um livro para cadastrar no banco de dados.",
+          "operationId": "cadastrarLivro",
+          "security": [{ "apiKeyAuth": [] }],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "titulo": { "type": "string", "example": "Dom Quixote" },
+                    "autor": { "type": "string", "example": "Miguel de Cervantes" },
+                    "editora": { "type": "string", "example": "ABC" },
+                    "anoPublicacao": { "type": "integer", "example": 1870 },
+                    "isbn": { "type": "string", "example": "1234567890" },
+                    "quantTotal": { "type": "integer", "example": 10 },
+                    "quantDisponivel": { "type": "integer", "example": 8 },
+                    "valorAquisicao": { "type": "number", "example": 50.0 },
+                    "statusLivroEmprestado": { "type": "string", "example": "disponível" }
+                  },
+                  "required": ["titulo", "autor", "editora", "anoPublicacao", "isbn", "quantTotal", "quantDisponivel", "valorAquisicao", "statusLivroEmprestado"]
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Livro cadastrado com sucesso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "mensagem": { "type": "string", "example": "Livro cadastrado com sucesso" }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Não foi possível cadastrar o livro",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "erro": { "type": "string", "example": "Dados inválidos ou incompletos" }
+                    }
+                  }
+                }
+              }
+            },
+            "401": { "description": "Token de autenticação ausente ou inválido" },
+            "403": { "description": "Acesso não autorizado" },
+            "500": { "description": "Erro interno no servidor" }
+          }
+        }
+      },
+      "/lista/livros": {
+        "get": {
+          "tags": ["Livros"],
+          "summary": "Listar todos os livros",
+          "description": "Retorna uma lista de todos os livros cadastrados no sistema.",
+          "operationId": "listarLivros",
+          "security": [{ "apiKeyAuth": [] }],
+          "responses": {
+            "200": {
+              "description": "Lista de livros retornada com sucesso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": { "$ref": "#/components/schemas/Livro" }
+                  }
+                }
+              }
+            },
+            "401": { "description": "Token de autenticação ausente ou inválido" },
+            "403": { "description": "Acesso não autorizado" },
+            "500": { "description": "Erro interno no servidor" }
+          }
+        }
+      },
+      "/delete/livro/{id}": {
+        "delete": {
+          "tags": ["Livros"],
+          "summary": "Deletar um livro pelo ID",
+          "description": "Remove um livro específico do banco de dados.",
+          "operationId": "deletarLivro",
+          "security": [{ "apiKeyAuth": [] }],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "description": "ID do livro a ser deletado",
+              "schema": { "type": "integer", "example": 1 }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Livro deletado com sucesso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "mensagem": { "type": "string", "example": "Livro deletado com sucesso" }
+                    }
+                  }
+                }
+              }
+            },
+            "404": { "description": "Livro não encontrado" },
+            "401": { "description": "Token de autenticação ausente ou inválido" },
+            "403": { "description": "Acesso não autorizado" },
+            "500": { "description": "Erro interno no servidor" }
+          }
+        }
+      },
+      "/novo/emprestimo": {
+        "post": {
+          "tags": ["Emprestimos"],
+          "summary": "Cadastrar novo empréstimo",
+          "description": "Esta rota recebe informações de um empréstimo para cadastrar no banco de dados.",
+          "operationId": "cadastrarEmprestimo",
+          "security": [{ "apiKeyAuth": [] }],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "idAluno": { "type": "integer", "example": 1 },
+                    "idLivro": { "type": "integer", "example": 1 },
+                    "dataEmprestimo": { "type": "string", "format": "date", "example": "2025-01-20" },
+                    "dataDevolucao": { "type": "string", "format": "date", "example": "2025-02-01" },
+                    "statusEmprestimo": {
+                      "type": "string",
+                      "example": "Realizado",
+                      "enum": ["Realizado", "Pendente", "Devolvido"]
+                    }
+                  },
+                  "required": ["idAluno", "idLivro", "dataEmprestimo", "dataDevolucao", "statusEmprestimo"]
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Empréstimo cadastrado com sucesso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "mensagem": { "type": "string", "example": "Empréstimo cadastrado com sucesso" }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Não foi possível cadastrar o empréstimo",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "erro": { "type": "string", "example": "Dados inválidos ou incompletos" }
+                    }
+                  }
+                }
+              }
+            },
+            "401": { "description": "Token de autenticação ausente ou inválido" },
+            "403": { "description": "Acesso não autorizado" },
+            "500": { "description": "Erro interno no servidor" }
+          }
+        }
+      },
+      "/lista/emprestimos": {
+        "get": {
+          "tags": ["Emprestimos"],
+          "summary": "Listar todos os empréstimos",
+          "description": "Retorna uma lista de todos os empréstimos cadastrados no sistema.",
+          "operationId": "listarEmprestimos",
+          "security": [{ "apiKeyAuth": [] }],
+          "responses": {
+            "200": {
+              "description": "Lista de empréstimos retornada com sucesso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": { "$ref": "#/components/schemas/Emprestimo" }
+                  }
+                }
+              }
+            },
+            "401": { "description": "Token de autenticação ausente ou inválido" },
+            "403": { "description": "Acesso não autorizado" },
+            "500": { "description": "Erro interno no servidor" }
+          }
+        }
+      },
+      "delete/emprestimo/{id}": {
+        "delete": {
+          "tags": ["Emprestimos"],
+          "summary": "Deletar um empréstimo pelo ID",
+          "description": "Remove um empréstimo específico do banco de dados.",
+          "operationId": "deletarEmprestimo",
+          "security": [{ "apiKeyAuth": [] }],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "description": "ID do empréstimo a ser deletado",
+              "schema": { "type": "integer", "example": 1 }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Empréstimo deletado com sucesso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "mensagem": { "type": "string", "example": "Empréstimo deletado com sucesso" }
+                    }
+                  }
+                }
+              }
+            },
+            "404": { "description": "Empréstimo não encontrado" },
+            "401": { "description": "Token de autenticação ausente ou inválido" },
+            "403": { "description": "Acesso não autorizado" },
+            "500": { "description": "Erro interno no servidor" }
+          }
+        }
+      }
+    },
+    "components": {
+      "securitySchemes": {
+        "apiKeyAuth": {
+          "type": "apiKey",
+          "in": "header",
+          "name": "x-access-token"
+        }
+      },
+      "schemas": {
+        "Aluno": {
+          "type": "object",
+          "properties": {
+            "id": { "type": "integer", "example": 1 },
+            "nome": { "type": "string", "example": "João" },
+            "sobrenome": { "type": "string", "example": "Silva" },
+            "dataNascimento": { "type": "string", "format": "date", "example": "2005-06-15" },
+            "endereco": { "type": "string", "example": "Rua Exemplo, 123" },
+            "email": { "type": "string", "format": "email", "example": "joao.silva@example.com" },
+            "celular": { "type": "string", "example": "(11) 99999-9999" }
+          },
+          "required": ["id", "nome", "sobrenome", "dataNascimento", "endereco", "email", "celular"]
+        },
+        "Livro": {
+          "type": "object",
+          "properties": {
+            "id": { "type": "integer", "example": 1 },
+            "titulo": { "type": "string", "example": "Dom Quixote" },
+            "autor": { "type": "string", "example": "Miguel de Cervantes" },
+            "editora": { "type": "string", "example": "ABC" },
+            "anoPublicacao": { "type": "integer", "example": 1870 },
+            "isbn": { "type": "string", "example": "1234567890" },
+            "quantTotal": { "type": "integer", "example": 10 },
+            "quantDisponivel": { "type": "integer", "example": 8 },
+            "valorAquisicao": { "type": "number", "example": 50.0 },
+            "statusLivroEmprestado": { "type": "string", "example": "disponível" }
+          },
+          "required": ["id", "titulo", "autor", "editora", "anoPublicacao", "isbn", "quantTotal", "quantDisponivel", "valorAquisicao", "statusLivroEmprestado"]
+        },
+        "Emprestimo": {
+          "type": "object",
+          "properties": {
+            "id": { "type": "integer", "example": 1 },
+            "idAluno": { "type": "integer", "example": 1 },
+            "idLivro": { "type": "integer", "example": 1 },
+            "dataEmprestimo": { "type": "string", "format": "date", "example": "2025-01-20" },
+            "dataDevolucao": { "type": "string", "format": "date", "example": "2025-02-01" },
+            "statusEmprestimo": { "type": "string", "example": "Realizado", "enum": ["Realizado", "Pendente", "Devolvido"] }
+          },
+          "required": ["id", "idAluno", "idLivro", "dataEmprestimo", "dataDevolucao", "statusEmprestimo"]
+        }
+      }
+    }
+  }
